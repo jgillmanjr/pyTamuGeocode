@@ -36,3 +36,8 @@ print(tg_res)
 Additionally, once you geocode an address, it caches it by way of a tuple of the address, city, state, and zipcode.
 
 Don't worry about capitalization, as it `lower()`'s all the address components.
+
+Additionally, if you want to only check if an address is cached, pass in the `only_check` parameter:
+```
+tg_res = tg.geocode('2703 Ena Dr.', 'Lansing', 'Michigan', '48917', only_check=True)
+```

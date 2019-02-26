@@ -103,9 +103,11 @@ class TamuGeocode:
 
         return None
 
-    def geocode(self, addr, city, state, zipcode):
+    def geocode(self, addr, city, state, zipcode, only_check=False):
         """
         Geocode a single address
+
+        If only_check is True, return a boolean indicating whether or not the address is in the cache
         """
         addr = addr.lower()
         city = city.lower()
@@ -114,11 +116,17 @@ class TamuGeocode:
 
         addr_tup = (addr, city, state, zipcode)
 
-        if addr_tup in self.geocode_cache:
-            return self.geocode_cache[addr_tup]
+        if not only_check:
+            if addr_tup in self.geocode_cache:
+                return self.geocode_cache[addr_tup]
+            else:
+                latlon = self._call_geo_api(*addr_tup)
+                idata = addr_tup + latlon
+                self._write_new_geocode(*idata)
+
+                return latlon
         else:
-            latlon = self._call_geo_api(*addr_tup)
-            idata = addr_tup + latlon
-            self._write_new_geocode(*idata)
-            
-            return latlon
+            if addr_tup in self.geocode_cache:
+                return True
+            else:
+                return False
